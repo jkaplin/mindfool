@@ -1,12 +1,12 @@
-import Phaser from 'phaser';
-import gameConfig from './app/gameConfig.js';
+import Phaser from "phaser";
+import gameConfig from "./gameConfig";
 
-function newGame () {
+function newGame() {
   if (game) return;
   game = new Phaser.Game(gameConfig);
 }
 
-function destroyGame () {
+function destroyGame() {
   if (!game) return;
   game.destroy(true);
   game.runDestroy();
