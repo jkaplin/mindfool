@@ -1,6 +1,7 @@
 {
   "name": "phaser-parcel",
   "version": "1.0.0",
+  "homepage": "https://jkaplin.github.io/mindfool/",
   "description": "A Phaser 3 game template using Parcel bundler",
   "main": "src/index.html",
   "scripts": {
