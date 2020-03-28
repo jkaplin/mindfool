@@ -10,11 +10,18 @@ export default class extends Phaser.Scene {
   init() {}
 
   preload() {
-    var bg = this.add.rectangle(600, 300, 40, 30, 0x666666);
+    var bg = this.add.rectangle(600, 300, 1000, 30, 0x666666);
     var bar = this.add
       .rectangle(bg.x, bg.y, bg.width, bg.height, 0xffffff)
       .setScale(0, 1);
-
+    var text = this.add
+      .text(600, 200, "Loading...", {
+        align: "center",
+        fill: "white",
+        fontFamily: "sans-serif",
+        fontSize: 48
+      })
+      .setOrigin(0.5, 0);
     this.load.audio("loop", require("../assets/loop.mp3"));
 
     this.load.image("background", require("../assets/back.png")); //the back ground image for the scene
