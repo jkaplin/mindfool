@@ -10,7 +10,7 @@ export default class extends Phaser.Scene {
   init() {}
 
   preload() {
-    var bg = this.add.rectangle(600, 300, 400, 30, 0x666666);
+    var bg = this.add.rectangle(600, 300, 40, 30, 0x666666);
     var bar = this.add
       .rectangle(bg.x, bg.y, bg.width, bg.height, 0xffffff)
       .setScale(0, 1);

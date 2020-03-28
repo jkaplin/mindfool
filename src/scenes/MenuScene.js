@@ -8,17 +8,19 @@ export default class extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(0, 0, "background").setOrigin(0);
-    this.add.image(200, 200, "player").setScale(1);
-    this.add.arc(600, 200, 50, 0, 180, 0xff0000, 0x00ffff);
+    this.add.image(600, 300, "background");
+
+    this.add.arc(600, 300, 50, 0, 180, 0xff0000, 0x00ffff);
+
     this.add
-      .text(600, 200, "MINDFOOL", {
+      .text(600, 300, "MINDFOOL", {
         align: "center",
         fill: "white",
         fontFamily: "sans-serif",
         fontSize: 48
       })
       .setOrigin(0.5, 0);
+
     this.input.on(
       "pointerdown",
       function() {
