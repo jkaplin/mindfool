@@ -7,7 +7,7 @@ import EndScene from "./scenes/EndScene";
 export default {
   type: Phaser.AUTO,
   width: 1200,
-  height: 700,
+  height: 70,
   pixelArt: true,
   title: "MindFool",
   url: "https://github.com/jkaplin/mindfool",

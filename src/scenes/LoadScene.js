@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+const Phaser = require("phaser");
 
 export default class extends Phaser.Scene {
   constructor() {
