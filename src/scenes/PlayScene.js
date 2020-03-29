@@ -63,7 +63,7 @@ export default class extends Phaser.Scene {
     player.setVelocityX(0);
     player.setVelocityY(0);
     restartTime = true;
-    if (win2) {
+    if (win2 || mode === "multiplayer") {
       win2 = false;
       player2.setX(otherSpawn.x + fixX);
       player2.setY(otherSpawn.y + fixY);
@@ -78,7 +78,7 @@ export default class extends Phaser.Scene {
     player2.setVelocityX(0);
     player2.setVelocityY(0);
     restartTime = true;
-    if (win) {
+    if (win || mode === "multiplayer") {
       win = false;
       player.setX(mySpawn.x + fixX);
       player.setY(mySpawn.y + fixY);
@@ -261,10 +261,8 @@ export default class extends Phaser.Scene {
   }
 
   handleTimeEvent() {
-    if (mode === "singleplayer")
-      this.playerHit();
-    else
-      this.playersHit();
+    if (mode === "singleplayer") this.playerHit();
+    else this.playersHit();
   }
 
   handleMouseClick(pointer) {
