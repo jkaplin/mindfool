@@ -13,6 +13,10 @@ var laserLayer, winLayer;
 var text;
 var level;
 var backgroundTile;
+var timedEvent;
+var timerBox;
+var timerBar;
+let timerBarWidth = 500;
 
 var leftSpawn, rightSpawn;
 var mySpawn, otherSpawn;
@@ -153,6 +157,8 @@ export default class extends Phaser.Scene {
     const currentMap = { key: "map-" + level };
     map = this.make.tilemap(currentMap);
 
+    
+
     leftSpawn = map.findObject("Objects", obj => obj.name === "leftSpawn");
     rightSpawn = map.findObject("Objects", obj => obj.name === "rightSpawn");
 
@@ -248,6 +254,7 @@ export default class extends Phaser.Scene {
 
     player.body.setVelocityY(-5);
 
+    timedEvent = this.time.addEvent({delay: 10000 + level * 5000, callback: this.handleTimeEvent, callbackScope: this, loop: true});
     /*
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -262,6 +269,13 @@ export default class extends Phaser.Scene {
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
     */
+  }
+
+  handleTimeEvent() {
+    if (mode === "singleplayer")
+      this.playerHit();
+    else
+      this.playersHit();
   }
 
   handleMouseClick(pointer) {
@@ -382,5 +396,9 @@ export default class extends Phaser.Scene {
       cursorUp = false;
       cursorDown = false;
     }
+
+    let size = timerBarWidth * (1 - timedEvent.getProgress());
+    timerBox = this.add.rectangle(25, 25, 510, 40, 0xFFFFFF).setOrigin(0);
+    timerBar = this.add.rectangle(30, 30, size, 30, 0x333333).setOrigin(0);
   }
 }
