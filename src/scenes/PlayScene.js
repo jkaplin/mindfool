@@ -121,21 +121,24 @@ export default class extends Phaser.Scene {
           require("../assets/levels/map-2.json")
         );
         break;
-      /*
       case 3:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-3.json"));
+        this.load.tilemapTiledJSON(
+          "map-3",
+          require("../assets/levels/map-3.json")
+        );
         break;
+      /*
       case 4:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-4.json"));
+        this.load.tilemapTiledJSON("map-4", require("../assets/levels/map-4.json"));
         break;
       case 5:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-5.json"));
+        this.load.tilemapTiledJSON("map-5", require("../assets/levels/map-5.json"));
         break;
       case 6:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-6.json"));
+        this.load.tilemapTiledJSON("map-6", require("../assets/levels/map-6.json"));
         break;
       case 7:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-7.json"));
+        this.load.tilemapTiledJSON("map-7", require("../assets/levels/map-7.json"));
         break;
       case 8:
         this.load.tilemapTiledJSON("map", require("../assets/levels/map-8.json"));
@@ -248,7 +251,6 @@ export default class extends Phaser.Scene {
 
     player.body.setVelocityY(-5);
 
-    /*
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
     laserLayer.renderDebug(debugGraphics, {
@@ -261,7 +263,6 @@ export default class extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
-    */
   }
 
   handleMouseClick(pointer) {
