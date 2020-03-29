@@ -1,11 +1,11 @@
 import Phaser from "phaser";
-import io from "socket.io-client";
 
 var fixX = 0;
 var fixY = -50;
 
 var mode;
 
+var size;
 var map;
 var player, player2;
 var cursors;
@@ -13,6 +13,11 @@ var laserLayer, winLayer;
 var text;
 var level;
 var backgroundTile;
+var timedEvent;
+var timerBox;
+var timerBar;
+let timerBarWidth;
+let restartTime;
 
 var leftSpawn, rightSpawn;
 var mySpawn, otherSpawn;
@@ -41,6 +46,8 @@ export default class extends Phaser.Scene {
     level = data.level;
     mode = data.mode;
 
+    restartTime = false;
+    timerBarWidth = 500;
     cursorLeft = false;
     cursorRight = false;
     cursorUp = false;
@@ -53,11 +60,31 @@ export default class extends Phaser.Scene {
   playerHit() {
     player.setX(mySpawn.x + fixX);
     player.setY(mySpawn.y + fixY);
+    player.setVelocityX(0);
+    player.setVelocityY(0);
+    restartTime = true;
+    if (win2) {
+      win2 = false;
+      player2.setX(otherSpawn.x + fixX);
+      player2.setY(otherSpawn.y + fixY);
+      player2.setVelocityX(0);
+      player2.setVelocityY(0);
+    }
   }
 
   playerHit2() {
     player2.setX(otherSpawn.x + fixX);
     player2.setY(otherSpawn.y + fixY);
+    player2.setVelocityX(0);
+    player2.setVelocityY(0);
+    restartTime = true;
+    if (win) {
+      win = false;
+      player.setX(mySpawn.x + fixX);
+      player.setY(mySpawn.y + fixY);
+      player.setVelocityX(0);
+      player.setVelocityY(0);
+    }
   }
 
   playersHit() {
@@ -67,6 +94,7 @@ export default class extends Phaser.Scene {
     player.setY(mySpawn.y + fixY);
     player2.setX(otherSpawn.x + fixX);
     player2.setY(otherSpawn.y + fixY);
+    restartTime = true;
   }
 
   playerWin() {
@@ -97,58 +125,6 @@ export default class extends Phaser.Scene {
       cursorUp = false;
       cursorDown = false;
       win2 = true;
-    }
-  }
-
-  preload() {
-    console.log(level);
-    switch (level) {
-      case 0:
-        this.load.tilemapTiledJSON(
-          "map-0",
-          require("../assets/levels/map-0.json")
-        );
-        break;
-      case 1:
-        this.load.tilemapTiledJSON(
-          "map-1",
-          require("../assets/levels/map-1.json")
-        );
-        break;
-      case 2:
-        this.load.tilemapTiledJSON(
-          "map-2",
-          require("../assets/levels/map-2.json")
-        );
-        break;
-      case 3:
-        this.load.tilemapTiledJSON(
-          "map-3",
-          require("../assets/levels/map-3.json")
-        );
-        break;
-      /*
-      case 4:
-        this.load.tilemapTiledJSON("map-4", require("../assets/levels/map-4.json"));
-        break;
-      case 5:
-        this.load.tilemapTiledJSON("map-5", require("../assets/levels/map-5.json"));
-        break;
-      case 6:
-        this.load.tilemapTiledJSON("map-6", require("../assets/levels/map-6.json"));
-        break;
-      case 7:
-        this.load.tilemapTiledJSON("map-7", require("../assets/levels/map-7.json"));
-        break;
-      case 8:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-8.json"));
-        break;
-      case 9:
-        this.load.tilemapTiledJSON("map", require("../assets/levels/map-9.json"));
-        break;
-        */
-      default:
-        break;
     }
   }
 
@@ -237,20 +213,38 @@ export default class extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     // make the camera follow the player
     this.cameras.main.startFollow(player);
-    this.cameras.main.setZoom(0.7);
 
-    // this text will show the score
-    text = this.add.text(1180, -100, "", {
-      fontSize: "20px",
-      fill: "#ffffff"
-    });
-    text.setText("Level: " + level + " / 9");
+    if (mode === "singleplayer") {
+      text = this.add.text(1000, 20, "", {
+        fontSize: "25px",
+        fill: "#ffffff"
+      });
+    }
+    if (mode === "multiplayer") {
+      this.cameras.main.setZoom(0.7);
+      text = this.add.text(1180, -100, "", {
+        fontSize: "30px",
+        fill: "#ffffff"
+      });
+    }
     // fix the text to the camera
     text.setScrollFactor(0);
-    text.setScale(1.5);
+    text.setText("Level: " + level + " / 4");
 
     player.body.setVelocityY(-5);
 
+    timedEvent = this.time.addEvent({
+      delay: 10000 + level * 5000,
+      callback: this.handleTimeEvent,
+      callbackScope: this,
+      loop: true
+    });
+
+    timerBox = this.add.rectangle(25, 25, 510, 40, 0x333333).setOrigin(0);
+    timerBar = this.add
+      .rectangle(30, 30, timerBarWidth, 30, 0xffffff)
+      .setOrigin(0);
+    /*
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
     laserLayer.renderDebug(debugGraphics, {
@@ -263,9 +257,16 @@ export default class extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
+  */
+  }
+
+  handleTimeEvent() {
+    if (mode === "singleplayer") this.playerHit();
+    else this.playersHit();
   }
 
   handleMouseClick(pointer) {
+    /*
     if (mode === "singleplayer") {
       var touchX = pointer.x;
       var touchY = pointer.y;
@@ -284,12 +285,19 @@ export default class extends Phaser.Scene {
         cursorDown = true;
       }
     }
+    */
   }
 
   update(time, delta) {
     if (win || win2) {
       if (mode === "singleplayer" || (win && win2)) {
-        this.scene.start("play", { mode: mode, level: level + 1 });
+        console.log(level);
+        if (level === 4) {
+          console.log("INSIDE");
+          this.scene.start("end");
+        } else {
+          this.scene.start("play", { mode: mode, level: level + 1 });
+        }
       }
     }
     backgroundTile.x = this.cameras.main.scrollX * -0.05;
@@ -300,14 +308,12 @@ export default class extends Phaser.Scene {
       if (player.body.velocity.x > -200) {
         player.body.setVelocityX(player.body.velocity.x - 10);
       }
-      player.anims.play("walk", true); // walk left
       player.flipX = true; // flip the sprite to the left
     }
     if (cursorRight || cursors.right.isDown) {
       if (player.body.velocity.x < 200) {
         player.body.setVelocityX(player.body.velocity.x + 10);
       }
-      player.anims.play("walk", true);
       player.flipX = false; // use the original sprite looking to the right
     }
     if (cursorUp || cursors.up.isDown) {
@@ -338,14 +344,12 @@ export default class extends Phaser.Scene {
         if (player2.body.velocity.x > -200) {
           player2.body.setVelocityX(player2.body.velocity.x - 10);
         }
-        player2.anims.play("walk", true); // walk left
         player2.flipX = true; // flip the sprite to the left
       }
       if (cursorRight || cursors.d.isDown) {
         if (player2.body.velocity.x < 200) {
           player2.body.setVelocityX(player2.body.velocity.x + 10);
         }
-        player2.anims.play("walk", true);
         player2.flipX = false; // use the original sprite looking to the right
       }
       if (cursorUp || cursors.w.isDown) {
@@ -382,6 +386,28 @@ export default class extends Phaser.Scene {
       cursorRight = false;
       cursorUp = false;
       cursorDown = false;
+    }
+
+    size = timerBarWidth * (1 - timedEvent.getProgress());
+    timerBar.setSize(size, 30);
+    if (timedEvent.getProgress() > 0.7) {
+      timerBar.setFillStyle(0xff0000);
+    } else {
+      timerBar.setFillStyle(0xffffff);
+    }
+    if (mode === "singleplayer") {
+      timerBox.setScrollFactor(0);
+      timerBar.setScrollFactor(0);
+    }
+    if (restartTime) {
+      timedEvent.remove();
+      timedEvent = this.time.addEvent({
+        delay: 10000 + level * 5000,
+        callback: this.handleTimeEvent,
+        callbackScope: this,
+        loop: true
+      });
+      restartTime = false;
     }
   }
 }
