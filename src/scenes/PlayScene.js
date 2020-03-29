@@ -261,8 +261,10 @@ export default class extends Phaser.Scene {
   }
 
   handleTimeEvent() {
-    if (mode === "singleplayer") this.playerHit();
-    else this.playersHit();
+    if (mode === "singleplayer")
+      this.playerHit();
+    else
+      this.playersHit();
   }
 
   handleMouseClick(pointer) {
