@@ -248,6 +248,7 @@ export default class extends Phaser.Scene {
 
     player.body.setVelocityY(-5);
 
+    /*
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
     laserLayer.renderDebug(debugGraphics, {
@@ -260,6 +261,7 @@ export default class extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
+    */
   }
 
   handleMouseClick(pointer) {
