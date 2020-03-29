@@ -27,7 +27,6 @@ export default class extends Phaser.Scene {
     this.load.image("background", require("../assets/back.png")); //the back ground image for the scene
 
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON("map", require("../assets/map.json"));
     this.load.image("image", require("../assets/texture.png"));
     // tiles in spritesheet
     this.load.spritesheet("tiles", require("../assets/tiles.png"), {
