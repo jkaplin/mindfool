@@ -25,8 +25,6 @@ var mySpawn, otherSpawn;
 
 var cursorLeft, cursorRight, cursorUp, cursorDown;
 
-var win, win2;
-
 export default class extends Phaser.Scene {
   constructor() {
     super({
@@ -55,79 +53,59 @@ export default class extends Phaser.Scene {
     cursorUp = false;
     cursorDown = false;
 
-    win = false;
-    win2 = false;
+    player = data.p1;
+    player2 = data.p2;
   }
 
   playerHit() {
-    player.setX(mySpawn.x + fixX);
-    player.setY(mySpawn.y + fixY);
-    player.setVelocityX(0);
-    player.setVelocityY(0);
+    console.log("PLAYER HIT");
+    player.respawn();
     restartTime = true;
-    if (win2 || mode === "multiplayer") {
-      win2 = false;
-      player2.setX(otherSpawn.x + fixX);
-      player2.setY(otherSpawn.y + fixY);
-      player2.setVelocityX(0);
-      player2.setVelocityY(0);
+    if (player2.won || mode === "multiplayer") {
+      player2.won = false;
+      player2.respawn();
     }
   }
 
   playerHit2() {
-    player2.setX(otherSpawn.x + fixX);
-    player2.setY(otherSpawn.y + fixY);
-    player2.setVelocityX(0);
-    player2.setVelocityY(0);
+    player2.respawn();
     restartTime = true;
-    if (win || mode === "multiplayer") {
-      win = false;
-      player.setX(mySpawn.x + fixX);
-      player.setY(mySpawn.y + fixY);
-      player.setVelocityX(0);
-      player.setVelocityY(0);
+    if (player.won || mode === "multiplayer") {
+      player.won = false;
+      player.respawn();
     }
   }
 
   playersHit() {
-    win = false;
-    win2 = false;
-    player.setX(mySpawn.x + fixX);
-    player.setY(mySpawn.y + fixY);
-    player2.setX(otherSpawn.x + fixX);
-    player2.setY(otherSpawn.y + fixY);
+    player.won = false;
+    player2.won = false;
+    player.respawn();
+    player2.respawn();
     restartTime = true;
   }
 
   playerWin() {
     if (
-      (mode === "singleplayer" && player.x > 800) ||
-      (mode === "multiplayer" && player.x < 800)
+      (mode === "singleplayer" && player.physics.x > 800) ||
+      (mode === "multiplayer" && player.physics.x < 800)
     ) {
-      player.setX(otherSpawn.x + fixX);
-      player.setY(otherSpawn.y + fixY);
-      player.setVelocityX(0);
-      player.setVelocityY(0);
+      player.respawn();
       cursorLeft = false;
       cursorRight = false;
       cursorUp = false;
       cursorDown = false;
-      win = true;
+      player.hasWon();
     }
-var score;
   }
 
   playerWin2() {
-    if (player2.x > 800) {
-      player2.setX(mySpawn.x + fixX);
-      player2.setY(mySpawn.y + fixY);
-      player2.setVelocityX(0);
-      player2.setVelocityY(0);
+    if (player2.physics.x > 800) {
+      player2.respawn();
       cursorLeft = false;
       cursorRight = false;
       cursorUp = false;
       cursorDown = false;
-      win2 = true;
+      player2.hasWon();
     }
   }
 
@@ -158,46 +136,41 @@ var score;
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = map.heightInPixels;
 
-    player = this.physics.add.sprite(
-      mySpawn.x + fixX,
-      mySpawn.y + fixY,
-      "player"
-    );
-
-    player.setBounce(0.2); // our player will bounce from items
-    player.setCollideWorldBounds(true); // don't go out of the map
+    player.x = mySpawn.x + fixX;
+    player.y = mySpawn.y + fixY;
+    player.setPhysics(this.physics.add.sprite(
+      player.x,
+      player.y,
+      player.imgURL
+    ));
 
     laserLayer.setCollisionByProperty({ collides: true });
-    this.physics.add.collider(player, laserLayer, this.playerHit);
+    this.physics.add.collider(player.physics, laserLayer, this.playerHit);
 
     winLayer.setCollisionByProperty({ win: true });
-    this.physics.add.collider(player, winLayer, this.playerWin);
+    this.physics.add.collider(player.physics, winLayer, this.playerWin);
 
     // small fix to our player images, we resize the physics body object slightly
-    player.body.setSize(player.width, player.height - 8);
-
+    player.physics.body.setSize(player.physics.width, player.physics.height - 8);
+    
     if (mode === "multiplayer") {
-      player2 = this.physics.add.sprite(
-        otherSpawn.x + fixX,
-        otherSpawn.y + fixY,
-        "player"
-      );
+      player2.x = otherSpawn.x + fixX;
+      player2.y = otherSpawn.y + fixY;
+      player2.setPhysics(this.physics.add.sprite(
+        player2.x,
+        player2.y,
+        player2.imgURL
+      ));
 
-      player2.setBounce(0.2); // our player will bounce from items
-      player2.setCollideWorldBounds(true); // don't go out of the map
-
-      laserLayer.setCollisionByProperty({ collides: true });
-      this.physics.add.collider(player2, laserLayer, this.playerHit2);
-
-      winLayer.setCollisionByProperty({ win: true });
-      this.physics.add.collider(player2, winLayer, this.playerWin2);
+      this.physics.add.collider(player2.physics, laserLayer, this.playerHit2);
+      this.physics.add.collider(player2.physics, winLayer, this.playerWin2);
 
       // small fix to our player images, we resize the physics body object slightly
-      player2.body.setSize(player2.width, player2.height - 8);
+      player2.physics.body.setSize(player2.physics.width, player2.physics.height - 8);
 
-      this.physics.add.collider(player, player2, this.playersHit);
-      player.flipX = true; // flip the sprite to the left
-      player2.body.setVelocityY(-5);
+      this.physics.add.collider(player.physics, player2.physics, this.playersHit);
+      player.physics.flipX = true; // flip the sprite to the left
+      player2.physics.body.setVelocityY(-5);
     }
 
     cursors = this.input.keyboard.createCursorKeys();
@@ -215,7 +188,7 @@ var score;
     // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     // make the camera follow the player
-    this.cameras.main.startFollow(player);
+    this.cameras.main.startFollow(player.physics);
 
     if (mode === "singleplayer") {
       text = this.add.text(1000, 20, "", {
@@ -234,7 +207,7 @@ var score;
     text.setScrollFactor(0);
     text.setText("Level: " + level + " / 4");
 
-    player.body.setVelocityY(-5);
+    player.physics.body.setVelocityY(-5);
 
     timedEvent = this.time.addEvent({
       delay: 10000 + level * 5000,
@@ -247,7 +220,7 @@ var score;
     timerBar = this.add
       .rectangle(30, 30, timerBarWidth, 30, 0xffffff)
       .setOrigin(0);
-    /*
+
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
     laserLayer.renderDebug(debugGraphics, {
@@ -260,7 +233,6 @@ var score;
       collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
-  */
   }
 
   handleTimeEvent() {
@@ -295,14 +267,14 @@ var score;
   }
 
   update(time, delta) {
-    if (win || win2) {
-      if (mode === "singleplayer" || (win && win2)) {
+    if (player.won || player2.won) {
+      if (mode === "singleplayer" || (player.won && player2.won)) {
         console.log(level);
         if (level === 4) {
           console.log("INSIDE");
           this.scene.start("end");
         } else {
-          this.scene.start("score", { mode: mode, level: level + 1, time: timedEvent.getProgress(), score: score});
+          this.scene.start("score", { mode: mode, level: level + 1, time: timedEvent.getProgress(), score: score, p1: player, p2: player2 });
         }
       }
     }
@@ -311,74 +283,36 @@ var score;
 
     this.input.on("pointerdown", this.handleMouseClick);
     if (cursorLeft || cursors.left.isDown) {
-      if (player.body.velocity.x > -200) {
-        player.body.setVelocityX(player.body.velocity.x - 10);
-      }
-      player.flipX = true; // flip the sprite to the left
+      player.moveLeft();
     }
     if (cursorRight || cursors.right.isDown) {
-      if (player.body.velocity.x < 200) {
-        player.body.setVelocityX(player.body.velocity.x + 10);
-      }
-      player.flipX = false; // use the original sprite looking to the right
+      player.moveRight();
     }
     if (cursorUp || cursors.up.isDown) {
-      if (player.body.velocity.y > -200) {
-        player.body.setVelocityY(player.body.velocity.y - 10);
-      }
+      player.moveUp();
     }
     if (cursorDown || cursors.down.isDown) {
-      if (player.body.velocity.y < 200) {
-        player.body.setVelocityY(player.body.velocity.y + 10);
-      }
+      player.moveDown();
     }
-    if (!cursors.left.isDown || !cursors.right.isDown) {
-      player.body.setVelocityX(player.body.velocity.x);
-      player.anims.play("idle", true);
-    }
-    if (!cursors.up.isDown || !cursors.down.isDown) {
-      player.body.setVelocityY(player.body.velocity.y);
-      player.anims.play("idle", true);
-    }
-    if (win) {
-      player.body.setVelocityX(0);
-      player.body.setVelocityY(0);
+    if (player.won) {
+      player.stopMove();
     }
 
     if (mode === "multiplayer") {
       if (cursorLeft || cursors.a.isDown) {
-        if (player2.body.velocity.x > -200) {
-          player2.body.setVelocityX(player2.body.velocity.x - 10);
-        }
-        player2.flipX = true; // flip the sprite to the left
+        player2.moveLeft();
       }
       if (cursorRight || cursors.d.isDown) {
-        if (player2.body.velocity.x < 200) {
-          player2.body.setVelocityX(player2.body.velocity.x + 10);
-        }
-        player2.flipX = false; // use the original sprite looking to the right
+        player2.moveRight();
       }
       if (cursorUp || cursors.w.isDown) {
-        if (player2.body.velocity.y > -200) {
-          player2.body.setVelocityY(player2.body.velocity.y - 10);
-        }
+        player2.moveDown();
       }
       if (cursorDown || cursors.s.isDown) {
-        if (player2.body.velocity.y < 200) {
-          player2.body.setVelocityY(player2.body.velocity.y + 10);
-        }
+        player2.moveUp();
       }
-      if (!cursors.a.isDown || !cursors.d.isDown) {
-        player2.body.setVelocityX(player2.body.velocity.x);
-        player2.anims.play("idle", true);
-      }
-      if (!cursors.w.isDown || !cursors.s.isDown) {
-        player2.body.setVelocityY(player2.body.velocity.y);
-        player2.anims.play("idle", true);
-      }
-      if (win2) {
-        player2.body.setVelocityX(0);
-        player2.body.setVelocityY(0);
+      if (player2.won) {
+        player2.stopMove();
       }
     }
     // switching from mouse to keyboard controls:

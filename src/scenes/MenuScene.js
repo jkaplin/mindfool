@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { Character } from "./character";
 
 export default class extends Phaser.Scene {
   constructor() {
@@ -69,7 +70,7 @@ export default class extends Phaser.Scene {
       singleplayer.setColor("white");
     });
     singleplayer.on("pointerdown", () => {
-      this.scene.start("play", { mode: "singleplayer", level: 0, score: 0 });
+      this.scene.start("play", { mode: "singleplayer", level: 0, score: 0, p1: new Character("player", "player"), p2: new Character("empty", null) });
     });
     multiplayer.on("pointerover", () => {
       multiplayer.setColor("aqua");
@@ -78,7 +79,7 @@ export default class extends Phaser.Scene {
       multiplayer.setColor("white");
     });
     multiplayer.on("pointerdown", () => {
-      this.scene.start("play", { mode: "multiplayer", level: 0, score: 0 });
+      this.scene.start("play", { mode: "multiplayer", level: 0, score: 0, p1: new Character("p1", "player"), p2: new Character("p2", "player") });
     });
   }
 }

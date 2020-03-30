@@ -4,6 +4,8 @@ var mode;
 var level;
 var score;
 var totalScore;
+var p1;
+var p2;
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -18,6 +20,10 @@ export default class extends Phaser.Scene {
         level = data.level;
         score = (1 - data.time) * 100;
         totalScore = data.score + score;
+        p1 = data.p1;
+        p2 = data.p2;
+        p1.won = false;
+        p2.won = false;
     }
 
     create() {
@@ -50,7 +56,7 @@ export default class extends Phaser.Scene {
         });
         next.on("pointerdown", () => {
             if (level < 4)
-                this.scene.start("play", { mode: mode, level: level, score: totalScore });
+                this.scene.start("play", { mode: mode, level: level, score: totalScore, p1: p1, p2: p2 });
             else
                 this.scene.start("end");
         });
