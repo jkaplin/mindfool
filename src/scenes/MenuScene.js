@@ -60,38 +60,76 @@ export default class extends Phaser.Scene {
       })
       .setOrigin(0.5, 0);
 
+    let devMode = this.add
+      .text(600, 400, "Dev Mode", {
+        align: "center",
+        fill: "white",
+        fontFamily: "sans-serif",
+        fontSize: 28
+      })
+      .setOrigin(0.5, 0);
+
+    let devModeBool = false;
+
     singleplayer.setInteractive();
     multiplayer.setInteractive();
+    devMode.setInteractive();
 
     singleplayer.on("pointerover", () => {
-      singleplayer.setColor("aqua");
+      singleplayer.setScale(1.1);
     });
     singleplayer.on("pointerout", () => {
-      singleplayer.setColor("white");
+      singleplayer.setScale(1 / 1.1);
     });
     singleplayer.on("pointerdown", () => {
       this.scene.start("play", {
         mode: "singleplayer",
         level: 0,
         score: 0,
+<<<<<<< HEAD
         p1: new Character("Player", "player"),
         p2: new Character(null, null)
+=======
+        p1: new Character("player", "player"),
+        p2: new Character("empty", null),
+        devMode: devModeBool
+>>>>>>> 45fea59811672053eeef4caf608197adc0219cbe
       });
     });
     multiplayer.on("pointerover", () => {
-      multiplayer.setColor("aqua");
+      multiplayer.setScale(1.1);
     });
     multiplayer.on("pointerout", () => {
-      multiplayer.setColor("white");
+      multiplayer.setScale(1 / 1.1);
     });
     multiplayer.on("pointerdown", () => {
       this.scene.start("play", {
         mode: "multiplayer",
         level: 0,
         score: 0,
+<<<<<<< HEAD
         p1: new Character("Player1", "player"),
         p2: new Character("Player2", "player2")
+=======
+        p1: new Character("p1", "player"),
+        p2: new Character("p2", "player2"),
+        devMode: devModeBool
+>>>>>>> 45fea59811672053eeef4caf608197adc0219cbe
       });
+    });
+    devMode.on("pointerover", () => {
+      devMode.setScale(1.1);
+    });
+    devMode.on("pointerout", () => {
+      devMode.setScale(1 / 1.1);
+    });
+    devMode.on("pointerdown", () => {
+      devModeBool = !devModeBool;
+      if (devModeBool) {
+        devMode.setColor("green");
+      } else {
+        devMode.setColor("white");
+      }
     });
   }
 }

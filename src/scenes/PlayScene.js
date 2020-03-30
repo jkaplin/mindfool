@@ -25,6 +25,8 @@ var mySpawn, otherSpawn;
 
 var cursorLeft, cursorRight, cursorUp, cursorDown;
 
+var devMode;
+
 export default class extends Phaser.Scene {
   constructor() {
     super({
@@ -45,6 +47,7 @@ export default class extends Phaser.Scene {
     level = data.level;
     mode = data.mode;
     score = data.score;
+    devMode = data.devMode;
 
     restartTime = false;
     timerBarWidth = 500;
@@ -233,20 +236,21 @@ export default class extends Phaser.Scene {
     timerBar = this.add
       .rectangle(30, 30, timerBarWidth, 30, 0xffffff)
       .setOrigin(0);
-    /*
-    // DEBUG
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    laserLayer.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-    });
-    winLayer.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
-    });
-  */
+
+    if (devMode) {
+      // DEBUG
+      const debugGraphics = this.add.graphics().setAlpha(0.75);
+      laserLayer.renderDebug(debugGraphics, {
+        tileColor: null, // Color of non-colliding tiles
+        collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+        faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+      });
+      winLayer.renderDebug(debugGraphics, {
+        tileColor: null, // Color of non-colliding tiles
+        collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
+        faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
+      });
+    }
   }
 
   handleTimeEvent() {
