@@ -55,10 +55,12 @@ export default class extends Phaser.Scene {
 
     player = data.p1;
     player2 = data.p2;
+    player.refresh();
+    player2.refresh();
   }
 
   playerHit() {
-    console.log("PLAYER HIT");
+    player.died();
     player.respawn();
     restartTime = true;
     if (player2.won || mode === "multiplayer") {
@@ -68,6 +70,7 @@ export default class extends Phaser.Scene {
   }
 
   playerHit2() {
+    player2.died();
     player2.respawn();
     restartTime = true;
     if (player.won || mode === "multiplayer") {
@@ -77,6 +80,8 @@ export default class extends Phaser.Scene {
   }
 
   playersHit() {
+    player.died();
+    player2.died();
     player.won = false;
     player2.won = false;
     player.respawn();
@@ -278,6 +283,9 @@ export default class extends Phaser.Scene {
   update(time, delta) {
     if (player.won || player2.won) {
       if (mode === "singleplayer" || (player.won && player2.won)) {
+        player.addTime(timedEvent.getProgress());
+        if (mode === "multiplayer")
+          player2.addTime(timedEvent.getProgress());
         this.scene.start("score", {
           mode: mode,
           level: level + 1,
@@ -350,6 +358,9 @@ export default class extends Phaser.Scene {
       timerBar.setScrollFactor(0);
     }
     if (restartTime) {
+      player.addTime(timedEvent.getProgress());
+        if (mode === "multiplayer")
+          player2.addTime(timedEvent.getProgress());
       timedEvent.remove();
       timedEvent = this.time.addEvent({
         delay: 10000 + level * 5000,

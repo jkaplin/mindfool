@@ -21,6 +21,11 @@ export class Character {
         this.y = spawn.y;
     }
 
+    refresh() {
+        this.lifeTime = 0;
+        this.deaths = 0;
+    }
+
     died() {
         this.deaths++;
     }
@@ -30,7 +35,7 @@ export class Character {
     }
 
     addTime(time) {
-        this.time += time;
+        this.lifeTime += time;
     }
 
     hasWon() {
@@ -81,5 +86,10 @@ export class Character {
 
         this.physics.setBounce(0.2); // our player will bounce from items
         this.physics.setCollideWorldBounds(true); // don't go out of the map
+    }
+
+    calcScore(level) {
+        this.score = (1 / this.lifeTime) * 100 - this.deaths * 10;
+        return this.score;
     }
 }

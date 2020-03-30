@@ -17,31 +17,41 @@ export default class extends Phaser.Scene {
   init(data) {
     mode = data.mode;
     level = data.level;
-    score = (1 - data.time) * 100;
-    totalScore = data.score + score;
     p1 = data.p1;
     p2 = data.p2;
     p1.won = false;
     p2.won = false;
+    p1.calcScore(level);
+    p2.calcScore(level);
+    if (mode === "singleplayer")
+        totalScore = data.score + p1.score;
+    else
+        totalScore = data.score + p1.score + p2.score;
   }
 
   create() {
-    let scoreText = this.add.text(450, 200, "Score: " + Math.round(score), {
-      align: "center",
-      fill: "white",
-      fontFamily: "sans-serif",
-      fontSize: 48
+    let p1ScoreText = this.add.text((mode === "multiplayer") ? 200 : 450, 150, p1.name + " Score: " + Math.round(p1.score), {
+        align: "center",
+        fill: "white",
+        fontFamily: "sans-serif",
+        fontSize: 32
     });
 
-    let totalScoreText = this.add.text(
-      400,
-      300,
-      "total Score: " + Math.round(totalScore),
+    if (mode === "multiplayer") {
+        let p2ScoreText = this.add.text(800, 150, p2.name + " Score: " + Math.round(p2.score), {
+            align: "center",
+            fill: "white",
+            fontFamily: "sans-serif",
+            fontSize: 32
+        });
+    }
+
+    let totalScoreText = this.add.text(450, 350, "Total Score: " + Math.round(totalScore),
       {
         align: "center",
         fill: "white",
         fontFamily: "sans-serif",
-        fontSize: 48
+        fontSize: 32
       }
     );
 
