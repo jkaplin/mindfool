@@ -86,14 +86,9 @@ export default class extends Phaser.Scene {
         mode: "singleplayer",
         level: 0,
         score: 0,
-<<<<<<< HEAD
-        p1: new Character("Player", "player"),
-        p2: new Character(null, null)
-=======
         p1: new Character("player", "player"),
         p2: new Character("empty", null),
         devMode: devModeBool
->>>>>>> 45fea59811672053eeef4caf608197adc0219cbe
       });
     });
     multiplayer.on("pointerover", () => {
@@ -107,14 +102,9 @@ export default class extends Phaser.Scene {
         mode: "multiplayer",
         level: 0,
         score: 0,
-<<<<<<< HEAD
-        p1: new Character("Player1", "player"),
-        p2: new Character("Player2", "player2")
-=======
         p1: new Character("p1", "player"),
         p2: new Character("p2", "player2"),
         devMode: devModeBool
->>>>>>> 45fea59811672053eeef4caf608197adc0219cbe
       });
     });
     devMode.on("pointerover", () => {
