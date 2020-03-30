@@ -44,7 +44,7 @@ export default class extends Phaser.Scene {
   init(data) {
     level = data.level;
     mode = data.mode;
-    score = data.score
+    score = data.score;
 
     restartTime = false;
     timerBarWidth = 500;
@@ -89,7 +89,7 @@ export default class extends Phaser.Scene {
       (mode === "singleplayer" && player.physics.x > 800) ||
       (mode === "multiplayer" && player.physics.x < 800)
     ) {
-      player.respawn();
+      player.respawn(otherSpawn.x + fixX, otherSpawn.y + fixY);
       cursorLeft = false;
       cursorRight = false;
       cursorUp = false;
@@ -100,7 +100,7 @@ export default class extends Phaser.Scene {
 
   playerWin2() {
     if (player2.physics.x > 800) {
-      player2.respawn();
+      player2.respawn(mySpawn.x + fixX, mySpawn.y + fixY);
       cursorLeft = false;
       cursorRight = false;
       cursorUp = false;
@@ -138,11 +138,10 @@ export default class extends Phaser.Scene {
 
     player.x = mySpawn.x + fixX;
     player.y = mySpawn.y + fixY;
-    player.setPhysics(this.physics.add.sprite(
-      player.x,
-      player.y,
-      player.imgURL
-    ));
+    player.setPhysics(
+      this.physics.add.sprite(player.x, player.y, player.imgURL)
+    );
+    player.physics.anims.play("idle", true);
 
     laserLayer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(player.physics, laserLayer, this.playerHit);
@@ -151,24 +150,33 @@ export default class extends Phaser.Scene {
     this.physics.add.collider(player.physics, winLayer, this.playerWin);
 
     // small fix to our player images, we resize the physics body object slightly
-    player.physics.body.setSize(player.physics.width, player.physics.height - 8);
-    
+    player.physics.body.setSize(
+      player.physics.width,
+      player.physics.height - 8
+    );
+
     if (mode === "multiplayer") {
       player2.x = otherSpawn.x + fixX;
       player2.y = otherSpawn.y + fixY;
-      player2.setPhysics(this.physics.add.sprite(
-        player2.x,
-        player2.y,
-        player2.imgURL
-      ));
+      player2.setPhysics(
+        this.physics.add.sprite(player2.x, player2.y, player2.imgURL)
+      );
+      player2.physics.anims.play("idle2", true);
 
       this.physics.add.collider(player2.physics, laserLayer, this.playerHit2);
       this.physics.add.collider(player2.physics, winLayer, this.playerWin2);
 
       // small fix to our player images, we resize the physics body object slightly
-      player2.physics.body.setSize(player2.physics.width, player2.physics.height - 8);
+      player2.physics.body.setSize(
+        player2.physics.width,
+        player2.physics.height - 8
+      );
 
-      this.physics.add.collider(player.physics, player2.physics, this.playersHit);
+      this.physics.add.collider(
+        player.physics,
+        player2.physics,
+        this.playersHit
+      );
       player.physics.flipX = true; // flip the sprite to the left
       player2.physics.body.setVelocityY(-5);
     }
@@ -220,7 +228,7 @@ export default class extends Phaser.Scene {
     timerBar = this.add
       .rectangle(30, 30, timerBarWidth, 30, 0xffffff)
       .setOrigin(0);
-
+    /*
     // DEBUG
     const debugGraphics = this.add.graphics().setAlpha(0.75);
     laserLayer.renderDebug(debugGraphics, {
@@ -233,6 +241,7 @@ export default class extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(200, 100, 100, 200), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(100, 59, 100, 255) // Color of colliding face edges
     });
+  */
   }
 
   handleTimeEvent() {
@@ -269,13 +278,14 @@ export default class extends Phaser.Scene {
   update(time, delta) {
     if (player.won || player2.won) {
       if (mode === "singleplayer" || (player.won && player2.won)) {
-        console.log(level);
-        if (level === 4) {
-          console.log("INSIDE");
-          this.scene.start("end");
-        } else {
-          this.scene.start("score", { mode: mode, level: level + 1, time: timedEvent.getProgress(), score: score, p1: player, p2: player2 });
-        }
+        this.scene.start("score", {
+          mode: mode,
+          level: level + 1,
+          time: timedEvent.getProgress(),
+          score: score,
+          p1: player,
+          p2: player2
+        });
       }
     }
     backgroundTile.x = this.cameras.main.scrollX * -0.05;
@@ -306,10 +316,10 @@ export default class extends Phaser.Scene {
         player2.moveRight();
       }
       if (cursorUp || cursors.w.isDown) {
-        player2.moveDown();
+        player2.moveUp();
       }
       if (cursorDown || cursors.s.isDown) {
-        player2.moveUp();
+        player2.moveDown();
       }
       if (player2.won) {
         player2.stopMove();

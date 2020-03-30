@@ -28,6 +28,12 @@ export default class extends Phaser.Scene {
       require("../assets/player.json")
     );
 
+    this.load.atlas(
+      "player2",
+      require("../assets/player2.png"),
+      require("../assets/player2.json")
+    );
+
     this.load.tilemapTiledJSON("map-0", require("../assets/levels/map-0.json"));
     this.load.tilemapTiledJSON("map-1", require("../assets/levels/map-1.json"));
     this.load.tilemapTiledJSON("map-2", require("../assets/levels/map-2.json"));
@@ -57,6 +63,11 @@ export default class extends Phaser.Scene {
     this.anims.create({
       key: "idle",
       frames: [{ key: "player", frame: "p1_stand" }],
+      frameRate: 10
+    });
+    this.anims.create({
+      key: "idle2",
+      frames: [{ key: "player2", frame: "p1_stand" }],
       frameRate: 10
     });
     this.scene.start("menu");
