@@ -264,8 +264,11 @@ var score;
   }
 
   handleTimeEvent() {
-    if (mode === "singleplayer") this.playerHit();
-    else this.playersHit();
+    if (mode === "singleplayer") {
+      this.playerHit();
+    } else {
+      this.playersHit();
+    }
   }
 
   handleMouseClick(pointer) {

@@ -1,8 +1,7 @@
 {
-  "name": "phaser-parcel",
+  "name": "mindfool",
   "version": "1.0.0",
   "homepage": "https://jkaplin.github.io/mindfool/",
-  "description": "A Phaser 3 game template using Parcel bundler",
   "main": "src/index.html",
   "scripts": {
     "predeploy": "rm -rf dist && parcel build src/index.html --public-url /mindfool",
@@ -12,16 +11,9 @@
     "start": "parcel serve src/index.html",
     "clean": "rm -v dist/*"
   },
-  "keywords": [
-    "phaser",
-    "phaser3",
-    "phaser-boilerplate"
-  ],
-  "author": "samme",
   "license": "ISC",
   "dependencies": {
-    "phaser": "^3.20.1",
-    "socket.io-client": "^2.3.0"
+    "phaser": "^3.20.1"
   },
   "devDependencies": {
     "gh-pages": "^2.2.0",
