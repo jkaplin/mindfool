@@ -4,6 +4,7 @@ var fixX = 0;
 var fixY = -50;
 
 var mode;
+var score;
 
 var size;
 var map;
@@ -45,6 +46,7 @@ export default class extends Phaser.Scene {
   init(data) {
     level = data.level;
     mode = data.mode;
+    score = data.score
 
     restartTime = false;
     timerBarWidth = 500;
@@ -112,6 +114,7 @@ export default class extends Phaser.Scene {
       cursorDown = false;
       win = true;
     }
+var score;
   }
 
   playerWin2() {
@@ -296,7 +299,7 @@ export default class extends Phaser.Scene {
           console.log("INSIDE");
           this.scene.start("end");
         } else {
-          this.scene.start("play", { mode: mode, level: level + 1 });
+          this.scene.start("score", { mode: mode, level: level + 1, time: timedEvent.getProgress(), score: score});
         }
       }
     }

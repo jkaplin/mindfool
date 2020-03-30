@@ -3,6 +3,7 @@ import LoadScene from "./scenes/LoadScene";
 import MenuScene from "./scenes/MenuScene";
 import PlayScene from "./scenes/PlayScene";
 import EndScene from "./scenes/EndScene";
+import ScoreScene from "./scenes/ScoreScene";
 
 export default {
   type: Phaser.AUTO,
@@ -15,5 +16,5 @@ export default {
     text: "white",
     background: ["#FD7400", "#FFE11A", "#BEDB39", "#1F8A70", "#004358"]
   },
-  scene: [LoadScene, MenuScene, PlayScene, EndScene]
+  scene: [LoadScene, MenuScene, PlayScene, EndScene, ScoreScene]
 };
